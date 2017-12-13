@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script>
+$(function () {
+
+$("#select_chart").on("change", function() {
+    $("#chart_form").submit();
+    
+});
+var chart_type = "{{ chart_type }}";
+$('#select_chart').val(chart_type).attr("selected", "selected");
+
+    $('#container').highcharts({
+        chart: {
+            type: chart_type,
+            options3d: {
+                enabled: true,
+                alpha: 10,
+                beta: 25,
+                depth: 70 
+            }
+        },
+        title: {
+            text: 'Time, 2016'
+        },
+	subtitle: {
+            text: 'Notice the difference between a 0 value and a null point'
+        },
+        tooltip: {
+          formatter: function () {
+          return '<b>' + this.point.x + '</b>: ' + this.point.y ;
+          }
+        },
+ 	plotOptions: {
+            column: {
+                depth: 25
+            }
+        },
+        xAxis: {
+            categories: {{ data1 }} 
+        },
+	yAxis: {
+            title: {
+                text: "Time"
+            }
+        },
+        series: [{
+            name: "Time",
+            data: {{ res }}
+        }]
+    });
+});
+</script>
+<body>
+<div>
+<form id="chart_form" name="chart_form" action="" method="POST">
+{% csrf_token %}
+<input type="radio" name="chart_data" id="chart_data" value="15" cheked/> Last 15 Mins
+<input type="radio" name="chart_data" id="chart_data" value="30"/> Last 30 Mins
+<select name="select_chart" id="select_chart">
+<option value="pie">Pie Chart</option>
+<option value="line">Line Chart</option>
+<option value="bar">Bar Chart</option>
+</select>
+</div>
+</form>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+</html>
